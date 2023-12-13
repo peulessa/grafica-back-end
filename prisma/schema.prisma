@@ -10,9 +10,76 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id       String  @id @default(uuid())
-  email    String  @unique
-  name     String?
-  password String
+model Usuario {
+  id        String    @id @default(uuid())
+  nome      String
+  email     String
+  nivel     String
+  login     String    @unique
+  senha     String
+  createdAt DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @db.Timestamptz(3)
+  deletedAt DateTime?
+
+  @@map("usuarios") //Nome da tabela
+}
+
+model Cliente {
+  id         String    @id @default(uuid())
+  nome       String
+  email      String
+  tipoPessoa String
+  cpf        String?   @unique
+  cnpj       String?   @unique
+  telefone   String
+  venda      Venda[]
+  createdAt  DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt  DateTime  @updatedAt @db.Timestamptz(3)
+  deletedAt  DateTime?
+
+  @@map("clientes") //Nome da tabela
+}
+
+model Fornecedor {
+  id        String    @id @default(uuid())
+  nome      String
+  email     String
+  cnpj      String    @unique @default("00.000.000/0000-00")
+  telefone  String
+  compra    Compra[]
+  createdAt DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @db.Timestamptz(3)
+  deletedAt DateTime?
+
+  @@map("fornecedores") //Nome da tabela
+}
+
+model Venda {
+  id         String    @id @default(uuid())
+  data       DateTime
+  vencimento DateTime
+  valor      Float
+  status     String
+  cliente    Cliente   @relation(fields: [clienteId], references: [id])
+  clienteId  String
+  createdAt  DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt  DateTime  @updatedAt @db.Timestamptz(3)
+  deletedAt  DateTime?
+
+  @@map("vendas") //Nome da tabela
+}
+
+model Compra {
+  id           String     @id @default(uuid())
+  data         DateTime
+  vencimento   DateTime
+  valor        Float
+  status       String
+  fornecedor   Fornecedor @relation(fields: [fornecedorId], references: [id])
+  fornecedorId String
+  createdAt    DateTime   @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime   @updatedAt @db.Timestamptz(3)
+  deletedAt    DateTime?
+
+  @@map("compras") //Nome da tabela
 }
