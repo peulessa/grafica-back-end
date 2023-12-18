@@ -1,10 +1,15 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
-    JwtModule.register({
-      secret: 'Ge.ap~7ZbF`,i~ljmxD&%*#4}P`ba$z7',
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: { expiresIn: configService.get<string>('JWT_EXPIRE') },
+      }),
     }),
   ],
   controllers: [],
