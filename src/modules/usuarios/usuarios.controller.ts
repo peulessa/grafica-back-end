@@ -1,20 +1,34 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
+import { BuscaUsuarioFilterDto } from './dto/busca-usuario.dto';
+import { Usuario } from '@prisma/client';
+import { filter } from 'rxjs';
 
 @Controller('usuarios')
 export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) {}
 
   @Post()
-  create(@Body() createUsuarioDto: CreateUsuarioDto) {
+  async create(@Body() createUsuarioDto: CreateUsuarioDto): Promise<any> {
     return this.usuariosService.create(createUsuarioDto);
   }
 
-  @Get()
-  findAll() {
-    return this.usuariosService.findAll();
+  @Get('admin')
+  async findAll(
+    @Query() filterDto?: BuscaUsuarioFilterDto,
+  ): Promise<Usuario[] | any> {
+    return this.usuariosService.findAllAdm(filterDto);
   }
 
   @Get(':id')
