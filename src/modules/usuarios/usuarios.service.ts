@@ -1,4 +1,9 @@
-import { ConflictException, Injectable, Logger } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import * as bcrypt from 'bcrypt';
@@ -97,16 +102,76 @@ export class UsuariosService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} usuario`;
+  async findOneId(id: string) {
+    const usuario = await this.prisma.usuario.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!usuario) {
+      this.logger.error('erro: Usuario não existe', {
+        logId: 'service.usuario.service.busca.id',
+      });
+
+      throw new NotFoundException('Usuario não encontrado');
+    }
+
+    return usuario;
   }
 
-  update(id: number, updateUsuarioDto: UpdateUsuarioDto) {
-    return `This action updates a #${id} usuario`;
+  async update(id: string, updateUsuarioDto: UpdateUsuarioDto) {
+    const data = updateUsuarioDto;
+    const usuarioExists = await this.prisma.usuario.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!usuarioExists) {
+      this.logger.error('erro: Usuario não existe', {
+        logId: 'service.usuario.service.atualiza',
+      });
+
+      throw new NotFoundException('Usuario não existe');
+    }
+
+    if (data.senha) {
+      data.senha = await this.hashSenha(data.senha);
+    }
+
+    await this.prisma.usuario.update({
+      data,
+      where: {
+        id,
+      },
+    });
+
+    return { message: 'Usuario atualizado com sucesso' };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} usuario`;
+  async remove(id: string) {
+    const usuarioExists = await this.prisma.usuario.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!usuarioExists) {
+      this.logger.error('erro: Usuario não existe', {
+        logId: 'service.usuario.service.remove',
+      });
+
+      throw new NotFoundException('Usuario não existe');
+    }
+
+    await this.prisma.usuario.delete({
+      where: {
+        id,
+      },
+    });
+
+    return { message: 'Usuario removido com sucesso' };
   }
 
   async hashSenha(rawSenha: string) {
