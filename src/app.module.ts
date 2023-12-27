@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { UsuariosModule } from './modules/usuarios/usuarios.module';
+import { UsersModule } from './modules/usuarios/users.module';
 import { ClientesModule } from './modules/clientes/clientes.module';
 import { FornecedoresModule } from './modules/fornecedores/fornecedores.module';
 import { VendasModule } from './modules/vendas/vendas.module';
@@ -9,7 +9,7 @@ import * as ConfigEnv from '@nestjs/config';
 @Module({
   imports: [
     ConfigEnv.ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
-    UsuariosModule,
+    UsersModule,
     ClientesModule,
     FornecedoresModule,
     VendasModule,
