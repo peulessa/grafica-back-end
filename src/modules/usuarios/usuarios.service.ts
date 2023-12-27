@@ -4,11 +4,11 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateUsuarioDto } from './dto/create-usuario.dto';
-import { UpdateUsuarioDto } from './dto/update-usuario.dto';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/plugins/prisma.service';
-import { BuscaUsuarioFilterDto } from './dto/busca-usuario.dto';
+import { FindUserDto } from './dto/find-user.dto';
 
 @Injectable()
 export class UsuariosService {
@@ -17,10 +17,10 @@ export class UsuariosService {
     private readonly logger: Logger,
   ) {}
 
-  async create(data: CreateUsuarioDto) {
-    data.senha = await this.hashSenha(data.senha);
+  async create(data: CreateUserDto) {
+    data.password = await this.hashSenha(data.password);
 
-    const usuarioExists = await this.prisma.usuario.findFirst({
+    const usuarioExists = await this.prisma.user.findFirst({
       where: {
         login: data.login,
       },
@@ -34,7 +34,7 @@ export class UsuariosService {
       throw new ConflictException('Usuário já existe');
     }
 
-    const emailExists = await this.prisma.usuario.findFirst({
+    const emailExists = await this.prisma.user.findFirst({
       where: {
         email: data.email,
       },
@@ -48,14 +48,14 @@ export class UsuariosService {
       throw new ConflictException('Email já existe');
     }
 
-    const usuario = this.prisma.usuario.create({
+    const usuario = this.prisma.user.create({
       data,
     });
 
     return usuario;
   }
 
-  async findAllAdm(filterDto?: BuscaUsuarioFilterDto): Promise<any> {
+  async findAllAdm(filterDto?: FindUserDto): Promise<any> {
     const { pesquisa, pagina } = filterDto;
     const take = 10;
     const skip = (Number(pagina) - 1) * take;
@@ -63,31 +63,31 @@ export class UsuariosService {
 
     try {
       if (pesquisa || pesquisa != null) {
-        const totalItems = await this.prisma.usuario.count({
+        const totalItems = await this.prisma.user.count({
           where: {
-            nome: {
+            name: {
               contains: pesquisa,
               mode: 'insensitive',
             },
           },
         });
-        items = await this.prisma.usuario.findMany({
+        items = await this.prisma.user.findMany({
           where: {
-            nome: {
+            name: {
               contains: pesquisa,
               mode: 'insensitive',
             },
           },
-          orderBy: { nome: 'asc' },
+          orderBy: { name: 'asc' },
           skip,
           take,
         });
 
         return await this.paginate(items, take, pagina, totalItems);
       } else {
-        const totalItems = await this.prisma.usuario.count({});
-        const items = await this.prisma.usuario.findMany({
-          orderBy: { nome: 'asc' },
+        const totalItems = await this.prisma.user.count({});
+        const items = await this.prisma.user.findMany({
+          orderBy: { name: 'asc' },
           skip,
           take,
         });
@@ -103,7 +103,7 @@ export class UsuariosService {
   }
 
   async findOneId(id: string) {
-    const usuario = await this.prisma.usuario.findUnique({
+    const usuario = await this.prisma.user.findUnique({
       where: {
         id,
       },
@@ -120,9 +120,9 @@ export class UsuariosService {
     return usuario;
   }
 
-  async update(id: string, updateUsuarioDto: UpdateUsuarioDto) {
+  async update(id: string, updateUsuarioDto: UpdateUserDto) {
     const data = updateUsuarioDto;
-    const usuarioExists = await this.prisma.usuario.findUnique({
+    const usuarioExists = await this.prisma.user.findUnique({
       where: {
         id,
       },
@@ -136,11 +136,11 @@ export class UsuariosService {
       throw new NotFoundException('Usuario não existe');
     }
 
-    if (data.senha) {
-      data.senha = await this.hashSenha(data.senha);
+    if (data.password) {
+      data.password = await this.hashSenha(data.password);
     }
 
-    await this.prisma.usuario.update({
+    await this.prisma.user.update({
       data,
       where: {
         id,
@@ -151,7 +151,7 @@ export class UsuariosService {
   }
 
   async remove(id: string) {
-    const usuarioExists = await this.prisma.usuario.findUnique({
+    const usuarioExists = await this.prisma.user.findUnique({
       where: {
         id,
       },
@@ -165,7 +165,7 @@ export class UsuariosService {
       throw new NotFoundException('Usuario não existe');
     }
 
-    await this.prisma.usuario.delete({
+    await this.prisma.user.delete({
       where: {
         id,
       },
