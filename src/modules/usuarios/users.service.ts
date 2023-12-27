@@ -11,7 +11,7 @@ import { PrismaService } from 'src/plugins/prisma.service';
 import { FindUserDto } from './dto/find-user.dto';
 
 @Injectable()
-export class UsuariosService {
+export class UsersService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly logger: Logger,
