@@ -10,14 +10,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Usuario {
+model User {
   id        String    @id @default(uuid())
-  nome      String
-  email     String
-  nivel     String
+  name      String
+  email     String    @unique
   login     String    @unique
-  senha     String
-  situacao  Situacao  @default(Ativo)
+  password  String
   createdAt DateTime  @default(now()) @db.Timestamptz(3)
   updatedAt DateTime  @updatedAt @db.Timestamptz(3)
   deletedAt DateTime?
