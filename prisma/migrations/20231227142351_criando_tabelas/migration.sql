@@ -1,20 +1,13 @@
-/*
-  Warnings:
-
-  - You are about to drop the `User` table. If the table is not empty, all the data it contains will be lost.
-
-*/
--- DropTable
-DROP TABLE "User";
+-- CreateEnum
+CREATE TYPE "Situacao" AS ENUM ('Ativo', 'Inativo');
 
 -- CreateTable
 CREATE TABLE "usuarios" (
     "id" TEXT NOT NULL,
-    "nome" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "nivel" TEXT NOT NULL,
     "login" TEXT NOT NULL,
-    "senha" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
     "createdAt" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMPTZ(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
@@ -81,6 +74,9 @@ CREATE TABLE "compras" (
 
     CONSTRAINT "compras_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "usuarios_email_key" ON "usuarios"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "usuarios_login_key" ON "usuarios"("login");
