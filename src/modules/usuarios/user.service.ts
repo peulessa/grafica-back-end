@@ -9,6 +9,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from 'src/plugins/prisma.service';
 import { FindUserDto } from './dto/find-user.dto';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -53,6 +54,12 @@ export class UserService {
     });
 
     return usuario;
+  }
+
+  async findAll(): Promise<User[]> {
+    return await this.prisma.user.findMany({
+      orderBy: { name: 'asc' },
+    });
   }
 
   async findAllAdm(filterDto?: FindUserDto): Promise<any> {

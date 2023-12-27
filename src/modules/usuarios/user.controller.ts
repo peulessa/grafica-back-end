@@ -28,13 +28,21 @@ export class UserController {
     return this.usuariosService.findOneId(id);
   }
 
+  @Get()
+  async findAll(): Promise<User[]> {
+    return this.usuariosService.findAll();
+  }
+
   @Get('admin')
   async findAllAdm(@Query() filterDto?: FindUserDto): Promise<User[] | any> {
     return this.usuariosService.findAllAdm(filterDto);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUsuarioDto: UpdateUserDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateUsuarioDto: UpdateUserDto,
+  ) {
     return this.usuariosService.update(id, updateUsuarioDto);
   }
 

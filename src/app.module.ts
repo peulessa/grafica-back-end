@@ -4,16 +4,16 @@ import { ClientesModule } from './modules/clientes/clientes.module';
 import { FornecedoresModule } from './modules/fornecedores/fornecedores.module';
 import { VendasModule } from './modules/vendas/vendas.module';
 import { ComprasModule } from './modules/compras/compras.module';
-import * as ConfigEnv from '@nestjs/config';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
-    ConfigEnv.ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
     UserModule,
     ClientesModule,
     FornecedoresModule,
     VendasModule,
     ComprasModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
