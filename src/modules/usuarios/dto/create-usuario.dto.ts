@@ -18,13 +18,6 @@ export class CreateUsuarioDto {
 
   @ApiProperty()
   @IsNotEmpty({
-    message: 'Informe o nível do Usuário',
-  })
-  @IsString()
-  nivel: string;
-
-  @ApiProperty()
-  @IsNotEmpty({
     message: 'Informe o Login',
   })
   @IsString()

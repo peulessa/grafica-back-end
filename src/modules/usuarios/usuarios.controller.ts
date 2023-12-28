@@ -12,7 +12,7 @@ import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { BuscaUsuarioFilterDto } from './dto/busca-usuario.dto';
-import { Usuario } from '@prisma/client';
+import { User } from '@prisma/client';
 
 @Controller('usuarios')
 export class UsuariosController {
@@ -24,14 +24,18 @@ export class UsuariosController {
   }
 
   @Get('id/:id')
-  async findOne(@Param('id') id: string): Promise<Usuario> {
+  async findOne(@Param('id') id: string): Promise<User> {
     return this.usuariosService.findOneId(id);
   }
 
+  @Get()
+  async findAll(@Query() filterDto?: BuscaUsuarioFilterDto): Promise<User[]> {
+    return this.usuariosService.findAll();
+  }
   @Get('admin')
   async findAllAdm(
     @Query() filterDto?: BuscaUsuarioFilterDto,
-  ): Promise<Usuario[] | any> {
+  ): Promise<User[] | any> {
     return this.usuariosService.findAllAdm(filterDto);
   }
 
