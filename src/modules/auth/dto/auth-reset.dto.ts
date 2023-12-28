@@ -1,9 +1,9 @@
 import { IsEmail, IsJWT, IsString, MinLength } from 'class-validator';
 
-export class AuthForgetDto {
+export class AuthResetDto {
   @IsString()
   @MinLength(8)
-  password: string;
+  senha: string;
 
   @IsJWT()
   token: string;

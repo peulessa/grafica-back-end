@@ -1,10 +1,5 @@
+import { PartialType } from '@nestjs/swagger';
 import { IsEmail, IsString, MinLength } from 'class-validator';
+import { CreateUsuarioDto } from 'src/modules/usuarios/dto/create-usuario.dto';
 
-export class AuthLoginDto {
-  @IsEmail()
-  email: string;
-
-  @IsString()
-  @MinLength(8)
-  password: string;
-}
+export class AuthLoginDto extends PartialType(CreateUsuarioDto) {}
